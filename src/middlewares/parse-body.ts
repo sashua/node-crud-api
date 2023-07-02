@@ -1,4 +1,4 @@
-import type { Middleware } from '../types.js';
+import type { Middleware } from '../lib/api-server.js';
 
 // ----------------------------------------------------------------
 // Looks if the request contains a JSON body and parses it

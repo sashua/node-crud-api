@@ -1,23 +1,35 @@
-import { createServer, type Server } from 'http';
-import type { Method, Middleware, Request, Response } from '../types.js';
+// ****************************************************************
+// * Minimalistic Express-like server
+// ****************************************************************
+
+import type { IncomingMessage, Server, ServerResponse } from 'http';
+import { createServer } from 'http';
+import { isRegExp } from 'util/types';
+
+export type Method = '*' | 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+export type Request = IncomingMessage & {
+  params?: Record<string, string>;
+  body?: string | Record<string, unknown>;
+};
+export type Next = (err?: Error) => void;
+export type Middleware = (req: Request, res: ServerResponse, next: Next) => void | Promise<void>;
 
 export class ApiServer {
   private server: Server;
   private middlewares: {
     method: Method;
-    path: string;
+    path: string | RegExp;
     callbacks: Middleware[];
-  }[];
+  }[] = [];
 
   constructor() {
     this.server = createServer(this.requestListener);
-    this.middlewares = [];
   }
 
   // ----------------------------------------------------------------
   // Mounts middlewares to the specified path
   //
-  use = (method: Method, path: string, ...callbacks: Middleware[]) => {
+  use = (method: Method, path: string | RegExp, ...callbacks: Middleware[]) => {
     this.middlewares.push({ path, method, callbacks });
   };
 
@@ -31,14 +43,14 @@ export class ApiServer {
   // ----------------------------------------------------------------
   // Handles incoming requests and passes them through middlewares stack
   //
-  private requestListener = async (req: Request, res: Response) => {
+  private requestListener = async (req: Request, res: ServerResponse) => {
     try {
       // declare next() function
       let error: Error | null = null;
-      let shouldGoNext: boolean;
+      let nextWasCalled: boolean;
       const next = (err: Error | null = null) => {
         error = err;
-        shouldGoNext = true;
+        nextWasCalled = true;
       };
 
       // prepare request and response objects
@@ -51,20 +63,19 @@ export class ApiServer {
         const isMethodMatches = method === '*' || method === req.method;
         if (!isMethodMatches) continue;
 
-        // check if url matches
+        // check if route matches
         req.params = ApiServer.matchUrl(path, req.url ?? '');
         if (!req.params) continue;
 
-        // invoke callbacks:
-        // - await if it's async function
-        // - throw exception if next(error) has been called
-        // - go further if next() has been called, and stop otherwise
+        // invoke route middlewares:
+        // - await if it's an async middleware
+        // - stop handling middlewares if next(error) is called or if next() wasn't called
         for (const callback of callbacks) {
-          shouldGoNext = false;
+          nextWasCalled = false;
           const maybePromise = callback(req, res, next);
           if (maybePromise instanceof Promise) await maybePromise;
           if (error) throw error;
-          if (!shouldGoNext) return;
+          if (!nextWasCalled) return;
         }
       }
 
@@ -83,24 +94,29 @@ export class ApiServer {
   // ----------------------------------------------------------------
   // Returns a body as a string
   //
-  private static getBody = async (req: Request) =>
-    new Promise<string>((resolve, reject) => {
+  private static getBody = (req: Request) => {
+    return new Promise<string>((resolve, reject) => {
       const data: Buffer[] = [];
       req
         .on('data', (chunk) => data.push(chunk))
         .on('end', () => resolve(Buffer.concat(data).toString()))
         .on('error', reject);
     });
+  };
 
   // ----------------------------------------------------------------
   // Compares url with the given path and returns named parameters if they exist
   //
-  private static matchUrl = (path: string, url: string): Record<string, string> | undefined => {
-    const pattern = path
-      .split('/')
-      .map((s) => (s.startsWith(':') ? `(?<${s.slice(1)}>[\\w-]+)` : s))
-      .join('\\/');
-    const match = new RegExp('^' + pattern + '$').exec(url);
+  private static matchUrl = (path: string | RegExp, url: string) => {
+    const pattern = isRegExp(path)
+      ? path
+      : new RegExp(
+          `^${path
+            .split('/')
+            .map((s) => (s.startsWith(':') ? `(?<${s.slice(1)}>[\\w-]+)` : s))
+            .join('\\/')}$`
+        );
+    const match = pattern.exec(url);
     return match ? match.groups ?? {} : undefined;
   };
 }

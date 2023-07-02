@@ -1,4 +1,4 @@
-import type { Middleware } from '../types.js';
+import type { Middleware } from '../lib/api-server.js';
 
 const MIN_USERNAME_LENGTH = 3;
 const MIN_AGE = 13;
