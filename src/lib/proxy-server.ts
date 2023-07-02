@@ -3,8 +3,7 @@
 // * using round-robin algorithm)
 // ****************************************************************
 
-import type { IncomingMessage, Server, ServerResponse } from 'http';
-import { createServer, request } from 'http';
+import { IncomingMessage, Server, ServerResponse, createServer, request } from 'http';
 
 export class ProxyServer {
   private server: Server;
@@ -17,6 +16,10 @@ export class ProxyServer {
   listen = (port: number, callback?: () => void) => {
     this.server.listen(port, callback);
   };
+
+  close(callback?: () => void) {
+    this.server.close(callback);
+  }
 
   private requestListener = (req: IncomingMessage, res: ServerResponse) => {
     const proxyReq = request(

@@ -13,23 +13,22 @@ const PORT = Number.parseInt(process.env.PORT ?? '3000');
 
 if (MULTI) {
   if (cluster.isPrimary) {
-    // calculate server ports due to available parallelism
-    const totalWorkers = os.availableParallelism() - 1;
-    const proxyPorts = Array(totalWorkers)
+    // calculate worker ports given the available parallelism
+    const workerPorts = Array(os.availableParallelism() - 1)
       .fill(0)
       .map((_, i) => PORT + i + 1);
 
-    // sreate shared UsersService instance
+    // create shared UsersService instance
     const rpcUsersService = new RpcServer(new UsersService());
 
     // spawn worker threads
-    proxyPorts.forEach((port) => {
+    workerPorts.forEach((port) => {
       const worker = cluster.fork({ PORT: port });
       rpcUsersService.listen(worker);
     });
 
     // start load balancer
-    new ProxyServer(proxyPorts).listen(PORT, () =>
+    new ProxyServer(workerPorts).listen(PORT, () =>
       console.log(`Load balancer (PID: ${process.pid}) is running on port: ${PORT}`)
     );
   } else {

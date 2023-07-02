@@ -1,4 +1,4 @@
-import type { Middleware } from '../lib/api-server.js';
+import { Middleware } from '../lib/api-server.js';
 
 // ----------------------------------------------------------------
 // Just a simple logger middleware

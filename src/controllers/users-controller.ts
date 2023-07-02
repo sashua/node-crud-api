@@ -2,8 +2,8 @@
 // * /api/users Route controller
 // ****************************************************************
 
-import type { Middleware } from '../lib/api-server.js';
-import type { User, UserDto, UsersService } from '../services/users-service.js';
+import { Middleware } from '../lib/api-server.js';
+import { User, UserDto, UsersService } from '../services/users-service.js';
 
 export class UsersController {
   constructor(private usersService: UsersService) {}

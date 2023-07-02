@@ -1,8 +1,8 @@
 {
-  "ignore": ["node_modules"],
   "watch": ["src"],
-  "ext": "ts",
-  "exec": "ts-node --esm src/index.ts",
+  "exec": "ts-node --esm ./src/index.ts",
+  "ext": ".ts",
+  "ignore": ["node_modules"],
   "env": {
     "NODE_ENV": "development"
   }

@@ -2,7 +2,7 @@
 // * Simple JSON-RPC protocol implementation through IPC connection
 // ****************************************************************
 
-import { type Worker } from 'cluster';
+import { Worker } from 'cluster';
 import { isPromise } from 'util/types';
 
 type RpcCall<T> = {

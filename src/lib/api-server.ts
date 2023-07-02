@@ -2,7 +2,7 @@
 // * Minimalistic Express-like server
 // ****************************************************************
 
-import type { IncomingMessage, Server, ServerResponse } from 'http';
+import { IncomingMessage, Server, ServerResponse } from 'http';
 import { createServer } from 'http';
 import { isRegExp } from 'util/types';
 
@@ -34,11 +34,18 @@ export class ApiServer {
   };
 
   // ----------------------------------------------------------------
-  // Starts the HTTP server listening for connections
+  // Starts HTTP server
   //
   listen = (port: number, callback?: () => void) => {
     this.server.listen(port, callback);
   };
+
+  // ----------------------------------------------------------------
+  // Closes HTTP server
+  //
+  close(callback?: () => void) {
+    this.server.close(callback);
+  }
 
   // ----------------------------------------------------------------
   // Handles incoming requests and passes them through middlewares stack

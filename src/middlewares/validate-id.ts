@@ -1,5 +1,5 @@
 import { validate } from 'uuid';
-import type { Middleware } from '../lib/api-server.js';
+import { Middleware } from '../lib/api-server.js';
 
 // ----------------------------------------------------------------
 // Checks if the request contains valid id parameter
