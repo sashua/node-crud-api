@@ -5,6 +5,7 @@
     "moduleResolution": "NodeNext",
     "rootDir": "./src",
     "outDir": "./dist",
+    "removeComments": true,
     "sourceMap": true,
     "noEmitOnError": true,
     "verbatimModuleSyntax": true,

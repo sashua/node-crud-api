@@ -27,9 +27,24 @@ export class ProxyServer {
         headers: req.headers,
       },
       (proxyRes) => {
-        proxyRes.pipe(res);
+        proxyRes
+          .on('data', (chunk) => {
+            if (!res.headersSent) {
+              this.copyHeaders(proxyRes, res);
+            }
+            res.write(chunk);
+          })
+          .on('end', () => {
+            if (!res.headersSent) {
+              this.copyHeaders(proxyRes, res);
+            }
+            res.end();
+          });
       }
-    ).on('error', () => res.writeHead(500).end('Internal Server Error'));
+    ).once('error', () =>
+      res.writeHead(500).end(JSON.stringify({ message: 'Internal Server Error' }))
+    );
+
     req.pipe(proxyReq);
   };
 
@@ -37,5 +52,10 @@ export class ProxyServer {
     const port = this.proxyPorts[this.portIndex];
     this.portIndex = ++this.portIndex % this.proxyPorts.length;
     return port;
+  };
+
+  private copyHeaders = (src: IncomingMessage, dest: ServerResponse) => {
+    const { statusCode = 200, statusMessage, headers } = src;
+    dest.writeHead(statusCode, statusMessage, headers);
   };
 }

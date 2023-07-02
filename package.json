@@ -6,9 +6,9 @@
   "type": "module",
   "scripts": {
     "start:dev": "nodemon",
-    "start:prod": "tsc && node dist/index.js",
+    "start:prod": "tsc && cross-env NODE_ENV=production node dist/index.js",
     "start:multi:dev": "cross-env MULTI=true nodemon",
-    "start:multi:prod": "tsc && cross-env MULTI=true node dist/index.js",
+    "start:multi:prod": "tsc && cross-env MULTI=true NODE_ENV=production node dist/index.js",
     "lint": "eslint ./src --ext .ts"
   },
   "keywords": [],
