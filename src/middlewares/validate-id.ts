@@ -2,7 +2,7 @@ import { validate } from 'uuid';
 import { Middleware } from '../lib/api-server.js';
 
 // ----------------------------------------------------------------
-// Checks if the request contains valid id parameter
+// Checks if the request contains a valid id parameter
 //
 export const validateId: Middleware = async (req, res, next) => {
   const id = req.params?.id ?? '';

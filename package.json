@@ -10,7 +10,7 @@
     "start:multi:dev": "cross-env MULTI=true nodemon",
     "start:multi:prod": "tsc && cross-env MULTI=true NODE_ENV=production node dist/index.js",
     "lint": "eslint ./src",
-    "test": "jest ./src"
+    "test": "jest ./src --runInBand"
   },
   "keywords": [],
   "author": "",

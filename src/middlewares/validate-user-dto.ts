@@ -1,10 +1,10 @@
 import { Middleware } from '../lib/api-server.js';
 
 const MIN_USERNAME_LENGTH = 3;
-const MIN_AGE = 13;
+const MIN_AGE = 1;
 
 // ----------------------------------------------------------------
-// Checks if the request body is a valid UserDto object
+// Checks if the request body is a valid UserDto
 //
 export const validateUserDto: Middleware = (req, res, next) => {
   const body = typeof req.body === 'object' ? req.body : {};
@@ -16,7 +16,7 @@ export const validateUserDto: Middleware = (req, res, next) => {
     message = `Username must be at least ${MIN_USERNAME_LENGTH} characters long`;
   } else if (typeof body.age !== 'number') {
     message = `Age is required`;
-  } else if (body.age < 13) {
+  } else if (body.age < MIN_AGE) {
     message = `Age must be at least ${MIN_AGE} years`;
   } else if (!Array.isArray(body.hobbies)) {
     message = `Hobbies list is required`;

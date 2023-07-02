@@ -1,5 +1,5 @@
 // ****************************************************************
-// * Simple JSON-RPC protocol implementation through IPC connection
+// * Simple implementation of JSON-RPC protocol via IPC connection
 // ****************************************************************
 
 import { Worker } from 'cluster';

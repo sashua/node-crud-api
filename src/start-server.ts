@@ -7,7 +7,7 @@ import { validateUserDto } from './middlewares/validate-user-dto.js';
 import { UsersService } from './services/users-service.js';
 
 // ----------------------------------------------------------------
-// Starts ApiServer instance on the specified port
+// Starts ApiServer instance
 //
 export const startServer = (port: number, usersService: UsersService) => {
   const usersController = new UsersController(usersService);

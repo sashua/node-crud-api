@@ -1,7 +1,7 @@
 import { Middleware } from '../lib/api-server.js';
 
 // ----------------------------------------------------------------
-// Looks if the request contains a JSON body and parses it
+// Looks if the request contains JSON body and parses it
 //
 export const parseBody: Middleware = (req, _, next) => {
   const { body, headers } = req;
