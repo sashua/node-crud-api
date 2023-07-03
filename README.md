@@ -48,20 +48,26 @@ git clone git@github.com:sashua/node-crud-api.git
 git clone https://github.com/sashua/node-crud-api.git
 ```
 
-### 2. Go to the project directory and install dependencies
+### 2. Go to the project directory
 
 ```sh
 cd node-crud-api
+```
+
+### 3. Switch to `dev` branch and install dependencies
+
+```sh
+git checkout dev
 npm install
 ```
 
-### 3. Create `.env` file and set `PORT` environment variable (default port is `3000` if not specified)
+### 4. Create `.env` file and set `PORT` environment variable (default port is `3000` if not specified)
 
 ```sh
 echo "PORT=4000" > .env
 ```
 
-### 4. Run the server in _single-_ or _multi-threaded_ mode
+### 5. Run the server in _single-_ or _multi-threaded_ mode
 
 ```sh
 # single-threaded mode
@@ -69,4 +75,10 @@ npm run start:prod
 
 # multi-threaded mode with load balancer
 npm run start:multi:prod
+```
+
+### \* You can run tests by typing the following command
+
+```sh
+npm run test
 ```
