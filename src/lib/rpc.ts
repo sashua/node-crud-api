@@ -16,10 +16,13 @@ type RpcResult = {
   id: number;
 };
 
+// ----------------------------------------------------------------
 export class RpcServer<T extends object> {
   constructor(private target: T) {}
 
   listen = (worker: Worker) => {
+    // receive call message from worker thread,
+    // invoke it on target object and return result
     worker.on('message', async ({ method, params, id }: RpcCall<T>) => {
       const maybePromise = (
         this.target[method] as (...args: unknown[]) => unknown | Promise<unknown>
@@ -30,11 +33,13 @@ export class RpcServer<T extends object> {
   };
 }
 
+// ----------------------------------------------------------------
 export class RpcProxyHandler<T extends object> {
   private resolvers = new Map<number, (value: unknown) => void>();
   private id = 1;
 
   constructor() {
+    // receive result from parent process and resolve promise
     process.on('message', ({ result, id }: RpcResult) => {
       this.resolvers.get(id)?.(result);
       this.resolvers.delete(id);
@@ -43,8 +48,9 @@ export class RpcProxyHandler<T extends object> {
     });
   }
 
-  get = (_: T, method: string) => {
+  get = (_: T, method: keyof T) => {
     return (...params: RpcCall<T>['params']) => {
+      // send call message to parent process
       return new Promise<unknown>((resolve) => {
         this.resolvers.set(this.id, resolve);
         process.send?.({ method, params, id: this.id++ });
