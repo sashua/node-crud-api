@@ -3,7 +3,7 @@
 // ****************************************************************
 
 import { IncomingMessage, Server, ServerResponse } from 'http';
-import { isRegExp } from 'util/types';
+import { isPromise, isRegExp } from 'util/types';
 
 export type Method = '*' | 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 export type Request = IncomingMessage & {
@@ -53,7 +53,7 @@ export class ApiServer extends Server {
           for (const callback of callbacks) {
             nextWasCalled = false;
             const maybePromise = callback(req, res, next);
-            if (maybePromise instanceof Promise) await maybePromise;
+            if (isPromise(maybePromise)) await maybePromise;
             if (error) throw error;
             if (!nextWasCalled) return;
           }
@@ -80,7 +80,7 @@ export class ApiServer extends Server {
   };
 
   // ----------------------------------------------------------------
-  // Reads a body from request stream and return is as a string
+  // Reads a body from request stream and return it as a string
   //
   private getBody = (req: Request) => {
     return new Promise<string>((resolve, reject) => {

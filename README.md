@@ -1,38 +1,20 @@
 # CRUD API
 
-A simple CRUD API using in-memory database
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=typescript&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-272727?style=flat&logo=nodedotjs&logoColor=339933)
+![Jest](https://img.shields.io/badge/Jest-C21325?style=flat&logo=jest&logoColor=white)
+
+A simple CRUD API server created using the core `node:http` module that uses an in-memory database. Also implemended a multi-threaded mode with a load balancer that distributes incoming requests between several REST-server instances using the round-robin algorithm.
 
 ## API reference
 
-### Get all users
-
-```http
-GET /api/users
-```
-
-### Get user by id
-
-```http
-GET /api/users/{user_id}
-```
-
-### Create a new user
-
-```http
-POST /api/users
-```
-
-### Update user by id
-
-```http
-PUT /api/users/{user_id}
-```
-
-### Delete user by id
-
-```http
-DELETE /api/users/{user_id}
-```
+| Endpoint                      | Description       |
+| :---------------------------- | :---------------- |
+| `GET /api/users`              | Get all users     |
+| `GET /api/users/{user_id}`    | Get user by id    |
+| `POST /api/users`             | Create a new user |
+| `PUT /api/users/{user_id}`    | Update user by id |
+| `DELETE /api/users/{user_id}` | Delete user by id |
 
 ## Run server locally
 
@@ -77,8 +59,16 @@ npm run start:prod
 npm run start:multi:prod
 ```
 
-### \* You can run tests by typing the following command
+### \* You can run tests by typing
 
 ```sh
 npm run test
 ```
+
+## Notes
+
+This project was created as part of the _"Node.js"_ course
+
+[Assignment description](https://github.com/AlreadyBored/nodejs-assignments/blob/main/assignments/crud-api/assignment.md)
+
+[![RS School](https://img.shields.io/badge/RS_School-Node.js_2023Q2-F8E856?style=flat)](https://rs.school)
